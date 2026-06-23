@@ -1,4 +1,24 @@
-#define ZMK_POINTING_DEFAULT_MOVE_VAL 575
+/*
+ * Eyelash Corne keymap — ported from a standard 42-key Corne layout.
+ *
+ * The Eyelash Corne has 48 key slots: the standard 42 Corne keys PLUS
+ * 6 center slots reserved for the rotary encoder / mouse dial cluster.
+ * Those 6 center slots (indices 6, 19/20/21, 34/35) are LEFT AT THEIR
+ * HARDWARE-DEFAULT bindings on every layer and are NOT overwritten by
+ * the ported layout. The rotary encoder behaviours (rsr_vol / rsr_trans)
+ * and per-layer sensor-bindings are preserved from the stock firmware.
+ *
+ * Physical slot map (the bindings arrays follow this order):
+ *   Row1:  0  1  2  3  4  5  [6]      7  8  9 10 11 12
+ *   Row2: 13 14 15 16 17 18 [19 20 21] 22 23 24 25 26 27
+ *   Row3: 28 29 30 31 32 33 [34 35]   36 37 38 39 40 41
+ *   Thmb: 42 43 44            45 46 47
+ *   [..] = preserved encoder/dial center slots.
+ */
+
+#define ZMK_POINTING_DEFAULT_MOVE_VAL 1200  // hardware-tuned (stock eyelash)
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 25    // hardware-tuned (stock eyelash)
+
 #define COMBO_TERM 25
 #define COMBO_IDLE 200
 #define SHIFT_TAP_SPEED 200
@@ -19,6 +39,22 @@
 
 / {
     behaviors {
+        // --- Rotary encoder / dial behaviours (stock eyelash, keep these) ---
+        rsr_vol: rsr_vol {
+            compatible = "zmk,behavior-runtime-sensor-rotate";
+            #sensor-binding-cells = <0>;
+            tap-ms = <5>;
+            cw-binding = <&kp C_VOL_UP>;
+            ccw-binding = <&kp C_VOL_DN>;
+        };
+
+        rsr_trans: rsr_trans {
+            compatible = "zmk,behavior-runtime-sensor-rotate";
+            #sensor-binding-cells = <0>;
+            tap-ms = <0>;
+        };
+
+        // --- Behaviours carried over from the source Corne keymap ---
         cmd_space: cmd_space {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -40,30 +76,18 @@
             tapping-term-ms = <SHIFT_TAP_SPEED>;
             bindings = <&kp LSHFT>, <&caps_word>, <&kp CAPS>;
         };
-
-        rsr_vol: rsr_vol {
-            compatible = "zmk,behavior-runtime-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            tap-ms = <5>;
-            cw-binding = <&kp C_VOL_UP>;
-            ccw-binding = <&kp C_VOL_DN>;
-        };
-
-        rsr_trans: rsr_trans {
-            compatible = "zmk,behavior-runtime-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            tap-ms = <0>;
-        };
     };
 
     combos {
         compatible = "zmk,combos";
 
+        /* Hardware soft-off combo (stock eyelash) */
         softoff {
             bindings = <&soft_off>;
             key-positions = <1 15 29>;
         };
 
+        /* --- Symbol combos on the top row (positions remapped to eyelash) --- */
         combo_exclamation {
             bindings = <&kp EXCLAMATION>;
             key-positions = <1 0>;
@@ -120,14 +144,14 @@
             require-prior-idle-ms = <COMBO_IDLE>;
         };
 
-        combo_parentheses-left {
+        combo_parentheses_left {
             bindings = <&kp LEFT_PARENTHESIS>;
             key-positions = <9 10>;
             timeout-ms = <COMBO_TERM>;
             require-prior-idle-ms = <COMBO_IDLE>;
         };
 
-        combo_parentheses-right {
+        combo_parentheses_right {
             bindings = <&kp RIGHT_PARENTHESIS>;
             key-positions = <10 11>;
             timeout-ms = <COMBO_TERM>;
@@ -141,20 +165,21 @@
             require-prior-idle-ms = <COMBO_IDLE>;
         };
 
+        /* --- Bracket / misc combos (remapped) --- */
         combo_backslash {
             bindings = <&kp BACKSLASH>;
             key-positions = <27 12>;
             layers = <1>;
         };
 
-        combo_brackets-right {
+        combo_brackets_right {
             bindings = <&kp RIGHT_BRACKET>;
-            key-positions = <24 25>;
+            key-positions = <25 26>;
         };
 
-        combo_brackets-left {
+        combo_brackets_left {
             bindings = <&kp LEFT_BRACKET>;
-            key-positions = <23 24>;
+            key-positions = <24 25>;
         };
 
         combo_tilde {
@@ -164,13 +189,13 @@
 
         combo_quotes {
             bindings = <&kp SINGLE_QUOTE>;
-            key-positions = <27 25>;
+            key-positions = <27 26>;
             layers = <0>;
         };
 
         combo_plus_equals {
             bindings = <&kp EQUAL>;
-            key-positions = <11 27>;
+            key-positions = <12 27>;
             layers = <0>;
         };
 
@@ -181,7 +206,7 @@
 
         combo_del {
             bindings = <&kp BACKSPACE>;
-            key-positions = <5 17>;
+            key-positions = <5 18>;
         };
 
         combo_enter {
@@ -205,48 +230,49 @@
 
         default_layer {
             display-name = "Base";
-            bindings = <&kp ESC &kp Q &kp W &kp E &kp R &kp T &none &kp Y &kp U &kp I &kp O &kp P
-                        &kp BSPC &kp TAB &kp A &kp S &kp D &kp F &kp G &none &none &none &kp H &kp J
-                        &kp K &kp L &kp SEMI &kp ENTER &td_lshift &kp Z &kp X &kp C &kp V &kp B
-                        &none &none &kp N &kp M &kp COMMA &kp DOT &kp FSLH &td_rshift &kp LCTRL &kp
-                        LALT &cmd_space LGUI SPACE &lt 1 SPACE &mo 2 &mo 3>;
+            bindings = <&kp ESC &kp Q &kp W &kp E &kp R &kp T &kp UP &kp Y &kp U &kp I &kp O &kp P
+                        &kp BSPC &kp TAB &kp A &kp S &kp D &kp F &kp G &kp LEFT &kp ENTER &kp RIGHT
+                        &kp H &kp J &kp K &kp L &kp SEMI &kp ENTER &td_lshift &kp Z &kp X &kp C &kp
+                        V &kp B &kp SPACE &kp DOWN &kp N &kp M &kp COMMA &kp DOT &kp FSLH &td_rshift
+                        &kp LCTRL &kp LALT &cmd_space LGUI SPACE &lt 1 SPACE &mo 2 &mo 3>;
 
             sensor-bindings = <&rsr_vol &rsr_trans>;
         };
 
         lower_layer {
             display-name = "Num&Fn";
-            bindings = <&trans &kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &trans &kp N6 &kp N7 &kp N8 &kp N9
-                        &kp N0 &kp BSPC &trans &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &trans &trans
-                        &trans &kp F6 &kp F7 &kp F8 &kp F9 &kp F10 &trans &trans &kp F11 &kp F12
+            bindings = <&trans &kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &mmv MOVE_UP &kp N6 &kp N7 &kp N8
+                        &kp N9 &kp N0 &kp BSPC &trans &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &mmv
+                        MOVE_LEFT &mkp LCLK &mmv MOVE_RIGHT &kp F6 &kp F7 &kp F8 &kp F9 &kp F10
+                        &trans &trans &kp F11 &kp F12 &trans &trans &trans &kp C_MUTE &mmv MOVE_DOWN
                         &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
-                        &trans &trans &trans &trans &trans &trans>;
+                        &trans>;
 
             sensor-bindings = <&rsr_vol &rsr_trans>;
         };
 
         raise_layer {
-            display-name = "Nav";
-            bindings = <&trans &trans &none &kp UP_ARROW &none &kp C_BRI_UP &trans &kp C_VOL_UP &msc
-                        SCRL_RIGHT &mmv MOVE_UP &msc SCRL_LEFT &msc SCRL_DOWN &trans &trans &none
-                        &kp LEFT_ARROW &kp DOWN_ARROW &kp RIGHT_ARROW &kp C_BRI_DN &trans &trans
-                        &trans &kp C_VOL_DOWN &mmv MOVE_LEFT &mmv MOVE_DOWN &mmv MOVE_RIGHT &msc
-                        SCRL_UP &trans &trans &trans &trans &trans &trans &trans &trans &trans &none
-                        &mkp MB1 &mkp MB3 &mkp MB2 &none &trans &trans &trans &trans &trans &trans
-                        &trans>;
+            display-name = "Navigation";
+            bindings = <&trans &trans &none &kp UP &none &kp C_BRI_UP &mmv MOVE_UP &kp C_VOLUME_UP
+                        &msc SCRL_RIGHT &mmv MOVE_UP &msc SCRL_LEFT &msc SCRL_DOWN &trans &trans
+                        &none &kp LEFT_ARROW &kp DOWN_ARROW &kp RIGHT_ARROW &kp C_BRI_DN &mmv
+                        MOVE_LEFT &mkp LCLK &mmv MOVE_RIGHT &kp C_VOLUME_DOWN &mmv MOVE_LEFT &mmv
+                        MOVE_DOWN &mmv MOVE_RIGHT &msc SCRL_UP &trans &trans &trans &trans &trans
+                        &trans &trans &trans &mmv MOVE_DOWN &none &mkp MB1 &mkp MB3 &mkp MB2 &none
+                        &trans &trans &trans &trans &trans &trans &trans>;
 
             sensor-bindings = <&rsr_vol &rsr_trans>;
         };
 
-        settings {
+        settings_layer {
             display-name = "Settings";
-            bindings = <&trans &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4
-                        &trans &trans &msc SCRL_RIGHT &kp UP_ARROW &msc SCRL_LEFT &msc SCRL_DOWN &bt
-                        BT_CLR &trans &none &kp C_PREVIOUS &kp C_PLAY_PAUSE &kp C_NEXT &trans &trans
-                        &trans &trans &trans &kp LEFT_ARROW &kp DOWN_ARROW &kp RIGHT_ARROW &msc
-                        SCRL_UP &trans &sys_reset &trans &trans &trans &trans &trans &trans &trans
-                        &none &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
-                        &trans>;
+            bindings = <&trans &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &mmv
+                        MOVE_UP &trans &msc SCRL_RIGHT &kp UP &msc SCRL_LEFT &msc SCRL_DOWN &bt
+                        BT_CLR &trans &none &kp C_PREVIOUS &kp C_PLAY_PAUSE &kp C_NEXT &trans &mmv
+                        MOVE_LEFT &mkp LCLK &mmv MOVE_RIGHT &trans &kp LEFT_ARROW &kp DOWN_ARROW &kp
+                        RIGHT_ARROW &msc SCRL_UP &trans &sys_reset &trans &trans &trans &trans
+                        &trans &kp C_MUTE &mmv MOVE_DOWN &none &trans &trans &trans &trans &trans
+                        &trans &trans &trans &trans &trans &trans>;
 
             sensor-bindings = <&rsr_vol &rsr_trans>;
         };
