@@ -18,7 +18,7 @@
 
 
 #define ZMK_POINTING_DEFAULT_MOVE_VAL 1100  // hardware-tuned (stock eyelash default 1200 which is crazy fast.)
-#define ZMK_POINTING_DEFAULT_SCRL_VAL 25    // hardware-tuned (stock eyelash)
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 18    // hardware-tuned (stock eyelash)
 
 #define COMBO_TERM 25
 #define COMBO_IDLE 200
@@ -42,7 +42,7 @@
 // 1. Mouse movement emulation custom config.
 &mmv {
     acceleration-exponent = <2>;      // quadratic: starts slow, then ramps to max speed as defined in ZMK_POINTING_DEFAULT_MOVE_VAL
-    time-to-max-speed-ms = <600>;     // default is ~300
+    time-to-max-speed-ms = <150>;     // default is ~300
     delay-ms = <0>;
 };
 
