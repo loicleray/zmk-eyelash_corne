@@ -16,8 +16,9 @@
  *   [..] = preserved encoder/dial center slots.
  */
 
+
 #define ZMK_POINTING_DEFAULT_MOVE_VAL 1100  // hardware-tuned (stock eyelash default 1200 which is crazy fast.)
-#define ZMK_POINTING_DEFAULT_SCRL_VAL 20    // hardware-tuned (stock eyelash)
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 25    // hardware-tuned (stock eyelash)
 
 #define COMBO_TERM 25
 #define COMBO_IDLE 200
@@ -35,6 +36,21 @@
 
 &soft_off {
     hold-time-ms = <2000>;
+};
+
+// MOUSE MOVEMENT & SCROLL CONFIGURATION
+// 1. Mouse movement emulation custom config.
+&mmv {
+    acceleration-exponent = <2>;      // quadratic: starts slow, then ramps to max speed as defined in ZMK_POINTING_DEFAULT_MOVE_VAL
+    time-to-max-speed-ms = <600>;     // default is ~300
+    delay-ms = <0>;
+};
+
+// 2. Mouse scroll emulation custom config.
+&msc {
+    acceleration-exponent = <1>;      // linear — scroll feels weird with curves
+    time-to-max-speed-ms = <1000>;
+    delay-ms = <0>;
 };
 
 / {
