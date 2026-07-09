@@ -16,8 +16,8 @@
  *   [..] = preserved encoder/dial center slots.
  */
 
-#define ZMK_POINTING_DEFAULT_MOVE_VAL 970  // hardware-tuned (stock eyelash default 1200 which is crazy fast.)
-#define ZMK_POINTING_DEFAULT_SCRL_VAL 18    // hardware-tuned (stock eyelash)
+#define ZMK_POINTING_DEFAULT_MOVE_VAL 1100  // hardware-tuned (stock eyelash default 1200 which is crazy fast.)
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 20    // hardware-tuned (stock eyelash)
 
 #define COMBO_TERM 25
 #define COMBO_IDLE 200
