@@ -196,6 +196,55 @@ layers:
   - {t: '$$mdi:transfer$$', type: trans}
   - {t: '$$mdi:transfer$$', type: trans}
   - {type: held}
+  numpad:
+  - {t: '$$mdi:transfer$$', type: trans}
+  - KP MULTIPLY
+  - {t: '1', s: '!'}
+  - {t: '2', s: '@'}
+  - {t: '3', s: '#'}
+  - +
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - KP DIVIDE
+  - {t: '4', s: $}
+  - {t: '5', s: '%'}
+  - {t: '6', s: ^}
+  - {t: '-', s: _}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '=', s: +}
+  - {t: '7', s: '&'}
+  - {t: '8', s: '*'}
+  - {t: '9', s: (}
+  - {t: '0', s: )}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
 combos:
 - p: [1, 15, 29]
   k: '&soft_off'
@@ -246,3 +295,5 @@ combos:
   k: $$mdi:keyboard-esc$$
 - p: [36, 22]
   k: $$mdi:keyboard-tab$$
+- p: [17, 16, 15]
+  k: {t: numpad, h: toggle}
