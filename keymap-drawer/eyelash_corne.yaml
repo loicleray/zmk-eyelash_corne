@@ -196,7 +196,7 @@ layers:
   - {t: '$$mdi:transfer$$', type: trans}
   - {t: '$$mdi:transfer$$', type: trans}
   - {type: held}
-  numpad:
+  NumPad:
   - {t: '$$mdi:transfer$$', type: trans}
   - KP MULTIPLY
   - {t: '1', s: '!'}
@@ -296,4 +296,4 @@ combos:
 - p: [36, 22]
   k: $$mdi:keyboard-tab$$
 - p: [17, 16, 15]
-  k: {t: numpad, h: toggle}
+  k: {t: NumPad, h: toggle}
