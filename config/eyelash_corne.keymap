@@ -36,8 +36,8 @@
 // 1. Mouse movement emulation custom config.
 
 &mmv {
-    acceleration-exponent = <1>;      // quadratic: starts slow, then ramps to max speed as defined in ZMK_POINTING_DEFAULT_MOVE_VAL
-    time-to-max-speed-ms = <350>;     // default is ~300
+    acceleration-exponent = <2>;      // quadratic: starts slow, then ramps to max speed as defined in ZMK_POINTING_DEFAULT_MOVE_VAL
+    time-to-max-speed-ms = <300>;     // default is ~300
     delay-ms = <0>;
 };
 
