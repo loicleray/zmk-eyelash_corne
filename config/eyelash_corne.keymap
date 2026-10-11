@@ -17,14 +17,14 @@
  *   [..] = preserved encoder/dial center slots.
  *
  * Layer order mirrors the source keymap so &lt / &mo / &tog indices line
- * up 1:1: base(0), numpad(1), num_fn(2), nav(3), settings(4), mirror(5).
+ * up 1:1: base(0), mirror(1), numpad(2), num_fn(3), nav(4), settings(5).
  */
 
 #define ZMK_POINTING_DEFAULT_MOVE_VAL 1000  // hardware-tuned (stock eyelash default 1200 which is crazy fast.)
 #define ZMK_POINTING_DEFAULT_SCRL_VAL 19    // hardware-tuned (stock eyelash)
 #define COMBO_TERM 25
 #define COMBO_IDLE 200
-#define SHIFT_TAP_SPEED 200
+#define SHIFT_HOLD_TERM 240   // ms the caps combo must be held to become caps-lock
 
 #include <input/processors.dtsi>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
@@ -39,18 +39,15 @@
 };
 
 // MOUSE MOVEMENT & SCROLL CONFIGURATION
-// 1. Mouse movement emulation custom config.
 
 &mmv {
-    acceleration-exponent = <1>;      // quadratic: starts slow, then ramps to max speed as defined in ZMK_POINTING_DEFAULT_MOVE_VAL
-    time-to-max-speed-ms = <350>;     // default is ~300
+    acceleration-exponent = <1>;
+    time-to-max-speed-ms = <350>;
     delay-ms = <0>;
 };
 
-// 2. Mouse scroll emulation custom config.
-
 &msc {
-    acceleration-exponent = <1>;      // linear — scroll feels weird with curves
+    acceleration-exponent = <1>;
     time-to-max-speed-ms = <1000>;
     delay-ms = <0>;
 };
@@ -75,35 +72,43 @@
 
         // --- Behaviours carried over from the source Corne keymap ---
 
+        /* Thumb key: hold = first parameter, tap = second. */
         cmd_space: cmd_space {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             flavor = "hold-preferred";
-            tapping-term-ms = <50>;
+            tapping-term-ms = <60>;
             bindings = <&kp>, <&kp>;
         };
 
+        /* Numpad keys: tap = digit, hold = bracket or period. */
         mt_numpad: mt_numpad {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             flavor = "tap-preferred";
-            quick-tap-ms = <175>;
+            quick-tap-ms = <165>;
             tapping-term-ms = <200>;
             bindings = <&kp>, <&kp>;
         };
 
-        td_lshift: tap_dance_lshift {
-            compatible = "zmk,behavior-tap-dance";
-            #binding-cells = <0>;
-            tapping-term-ms = <SHIFT_TAP_SPEED>;
-            bindings = <&kp LSHFT>, <&caps_word>, <&kp CAPS>;
+        /* Caps combos: tap = caps-word, hold = caps-lock. */
+        n_shift_ht: new_shift_hold_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <SHIFT_HOLD_TERM>;
+            bindings = <&kp>, <&caps_word_p>;
         };
+    };
 
-        td_rshift: tap_dance_rshift {
-            compatible = "zmk,behavior-tap-dance";
-            #binding-cells = <0>;
-            tapping-term-ms = <SHIFT_TAP_SPEED>;
-            bindings = <&kp LSHFT>, <&caps_word>, <&kp CAPS>;
+    macros {
+        /* caps_word with an ignored parameter, so it fits a 2-cell hold-tap. */
+        caps_word_p: caps_word_p {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&caps_word>;
         };
     };
 
@@ -117,13 +122,14 @@
             key-positions = <1 15 29>;
         };
 
-        /* --- Symbol combos on the top row (positions remapped to eyelash) --- */
+        /* --- Top row: adjacent pairs give shifted number-row symbols --- */
 
         combo_exclamation {
             bindings = <&kp EXCLAMATION>;
             key-positions = <1 0>;
             timeout-ms = <COMBO_TERM>;
             require-prior-idle-ms = <COMBO_IDLE>;
+            layers = <0>;
         };
 
         combo_at {
@@ -131,6 +137,7 @@
             key-positions = <2 1>;
             timeout-ms = <COMBO_TERM>;
             require-prior-idle-ms = <COMBO_IDLE>;
+            layers = <0>;
         };
 
         combo_hash {
@@ -138,6 +145,7 @@
             key-positions = <3 2>;
             timeout-ms = <COMBO_TERM>;
             require-prior-idle-ms = <COMBO_IDLE>;
+            layers = <0>;
         };
 
         combo_dollar {
@@ -145,6 +153,7 @@
             key-positions = <4 3>;
             timeout-ms = <COMBO_TERM>;
             require-prior-idle-ms = <COMBO_IDLE>;
+            layers = <0>;
         };
 
         combo_percent {
@@ -152,6 +161,7 @@
             key-positions = <5 4>;
             timeout-ms = <COMBO_TERM>;
             require-prior-idle-ms = <COMBO_IDLE>;
+            layers = <0>;
         };
 
         combo_caret {
@@ -159,6 +169,7 @@
             key-positions = <7 5>;
             timeout-ms = <COMBO_TERM>;
             require-prior-idle-ms = <COMBO_IDLE>;
+            layers = <0>;
         };
 
         combo_ampersand {
@@ -166,6 +177,7 @@
             key-positions = <8 7>;
             timeout-ms = <COMBO_TERM>;
             require-prior-idle-ms = <COMBO_IDLE>;
+            layers = <0>;
         };
 
         combo_asterisk {
@@ -173,6 +185,7 @@
             key-positions = <9 8>;
             timeout-ms = <COMBO_TERM>;
             require-prior-idle-ms = <COMBO_IDLE>;
+            layers = <0>;
         };
 
         combo_parentheses_left {
@@ -180,6 +193,7 @@
             key-positions = <9 10>;
             timeout-ms = <COMBO_TERM>;
             require-prior-idle-ms = <COMBO_IDLE>;
+            layers = <0>;
         };
 
         combo_parentheses_right {
@@ -187,6 +201,7 @@
             key-positions = <10 11>;
             timeout-ms = <COMBO_TERM>;
             require-prior-idle-ms = <COMBO_IDLE>;
+            layers = <0>;
         };
 
         combo_minus {
@@ -194,29 +209,35 @@
             key-positions = <11 12>;
             timeout-ms = <COMBO_TERM>;
             require-prior-idle-ms = <COMBO_IDLE>;
+            layers = <0>;
         };
 
-        /* --- Bracket / misc combos (remapped) --- */
+        /* --- Brackets / backslash --- */
 
         combo_backslash {
             bindings = <&kp BACKSLASH>;
             key-positions = <27 12>;
-            layers = <2>;
+            layers = <3>;                   // Num&Fn layer only
         };
 
         combo_brackets_right {
             bindings = <&kp RIGHT_BRACKET>;
             key-positions = <25 26>;
+            layers = <0>;
         };
 
         combo_brackets_left {
             bindings = <&kp LEFT_BRACKET>;
             key-positions = <24 25>;
+            layers = <0>;
         };
+
+        /* --- Quotes / grave / equals --- */
 
         combo_tilde {
             bindings = <&kp GRAVE>;
             key-positions = <0 13>;
+            layers = <0>;
         };
 
         combo_quotes {
@@ -230,6 +251,24 @@
             key-positions = <12 27>;
             layers = <0>;
         };
+
+        /* --- Caps: tap = caps-word, hold = caps-lock --- */
+
+        combo_caps_left {
+            bindings = <&n_shift_ht CAPS 0>;
+            key-positions = <13 28>;
+            timeout-ms = <COMBO_TERM>;
+            layers = <0>;
+        };
+
+        combo_caps_right {
+            bindings = <&n_shift_ht CAPS 0>;
+            key-positions = <27 41>;
+            timeout-ms = <COMBO_TERM>;
+            layers = <0>;
+        };
+
+        /* --- Utility keys --- */
 
         combo_globe {
             bindings = <&kp GLOBE>;
@@ -256,51 +295,96 @@
             key-positions = <36 22>;
         };
 
-        combo_numpad_toggle {
-            bindings = <&tog 1>;
+        /* --- Layer toggles (three keys together); &to turns every other toggled layer off --- */
+
+        combo_base_on_left {
+            bindings = <&to 0>;
             key-positions = <15 16 17>;
             timeout-ms = <COMBO_TERM>;
             require-prior-idle-ms = <COMBO_IDLE>;
+            layers = <2 1>;
         };
 
-        combo_mirror_toggle {
-            bindings = <&tog 5>;
+        combo_mirror_on_left {
+            bindings = <&to 1>;
             key-positions = <2 3 4>;
             timeout-ms = <COMBO_TERM>;
             require-prior-idle-ms = <COMBO_IDLE>;
+            layers = <0 2>;
+        };
+
+        combo_numpad_on_left {
+            bindings = <&to 2>;
+            key-positions = <30 31 32>;
+            timeout-ms = <COMBO_TERM>;
+            require-prior-idle-ms = <COMBO_IDLE>;
+            layers = <0 1>;
+        };
+
+        combo_base_on_right {
+            bindings = <&to 0>;
+            key-positions = <23 24 25>;
+            timeout-ms = <COMBO_TERM>;
+            require-prior-idle-ms = <COMBO_IDLE>;
+            layers = <2 1>;
+        };
+
+        combo_mirror_on_right {
+            bindings = <&to 1>;
+            key-positions = <8 9 10>;
+            timeout-ms = <COMBO_TERM>;
+            require-prior-idle-ms = <COMBO_IDLE>;
+            layers = <0 2>;
+        };
+
+        combo_numpad_on_right {
+            bindings = <&to 2>;
+            key-positions = <38 39 37>;
+            timeout-ms = <COMBO_TERM>;
+            require-prior-idle-ms = <COMBO_IDLE>;
+            layers = <0 1>;
         };
     };
 
     keymap {
         compatible = "zmk,keymap";
 
+        /* Layer 0: Base (QWERTY). Centers: UP / LEFT ENTER RIGHT / SPACE DOWN */
         base_layer {
             display-name = "Base";
-
-            // Row1 (e0-e12):  ESC Q W E R T [UP] Y U I O P BSPC
-            // Row2 (e13-e27): TAB A S D F G [LEFT ENTER RIGHT] H J K L SEMI ENTER
-            // Row3 (e28-e41): shift Z X C V B [SPACE DOWN] N M , . / shift
-            // Thumbs (e42-e47): LCTRL LALT cmd_space | lt(2) mo(3) mo(4)
             bindings = <
                 &kp ESC &kp Q &kp W &kp E &kp R &kp T &kp UP &kp Y &kp U &kp I &kp O &kp P &kp BSPC
                 &kp TAB &kp A &kp S &kp D &kp F &kp G &kp LEFT &kp ENTER &kp RIGHT &kp H &kp J &kp K &kp L &kp SEMI &kp ENTER
-                &td_lshift &kp Z &kp X &kp C &kp V &kp B &kp SPACE &kp DOWN &kp N &kp M &kp COMMA &kp DOT &kp FSLH &td_rshift
-                &kp LCTRL &kp LALT &cmd_space LGUI SPACE &lt 2 SPACE &mo 3 &mo 4
+                &kp LSHFT &kp Z &kp X &kp C &kp V &kp B &kp SPACE &kp DOWN &kp N &kp M &kp COMMA &kp DOT &kp FSLH &kp RSHFT
+                &kp LCTRL &kp LALT &cmd_space LGUI SPACE &lt 3 SPACE &mo 4 &mo 5
             >;
 
             sensor-bindings = <&rsr_vol &rsr_trans>;
         };
 
-        numpad_layer {
-            display-name = "NumPad";
+        /* Layer 1: Mirror (toggle with W + E + R) */
+        mirror_layer {
+            display-name = "Mirror";
             bindings = <
-                &trans &kp KP_MULTIPLY &kp KP_NUMBER_7 &mt_numpad LEFT_PARENTHESIS KP_NUMBER_8 &mt_numpad RIGHT_PARENTHESIS KP_NUMBER_9 &kp KP_PLUS &trans &trans &trans &trans &trans &trans &trans
-                &trans &kp KP_DIVIDE &kp KP_NUMBER_4 &mt_numpad PERIOD KP_NUMBER_5 &kp KP_NUMBER_6 &kp KP_SUBTRACT &trans &trans &trans &trans &trans &trans &trans &trans &trans
-                &trans &kp KP_NUMBER_0 &kp KP_NUMBER_1 &kp KP_NUMBER_2 &kp KP_NUMBER_3 &kp KP_EQUAL &trans &trans &trans &trans &trans &trans &trans &trans
+                &trans &kp P &kp O &kp I &kp U &kp Y &trans &kp T &kp R &kp E &kp W &kp Q &trans
+                &trans &kp SEMI &kp L &kp K &kp J &kp H &trans &trans &trans &kp G &kp F &kp D &kp S &kp A &trans
+                &trans &kp FSLH &kp DOT &kp COMMA &kp M &kp N &trans &trans &kp B &kp V &kp C &kp X &kp Z &trans
                 &trans &trans &trans &trans &trans &trans
             >;
         };
 
+        /* Layer 2: NumPad (toggle with S + D + F). Hold 8 = (  hold 9 = )  hold 5 = . */
+        numpad_layer {
+            display-name = "NumPad";
+            bindings = <
+                &trans &kp KP_MULTIPLY &mt_numpad LEFT_PARENTHESIS KP_N7 &kp KP_N8 &mt_numpad RPAR KP_N9 &kp KP_PLUS &trans &trans &trans &trans &trans &trans &trans
+                &trans &kp KP_DIVIDE &kp KP_N4 &mt_numpad KP_N0 KP_N5 &kp KP_N6 &kp KP_SUBTRACT &trans &trans &trans &trans &trans &trans &trans &trans &trans
+                &trans &kp KP_N0 &kp KP_N1 &mt_numpad DOT KP_N2 &kp KP_N3 &kp KP_EQUAL &trans &trans &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+            >;
+        };
+
+        /* Layer 3: Numbers & function keys (hold first right thumb key) */
         num_fn_layer {
             display-name = "Num&Fn";
             bindings = <
@@ -313,38 +397,30 @@
             sensor-bindings = <&rsr_vol &rsr_trans>;
         };
 
+        /* Layer 4: Navigation, media and mouse (hold second right thumb key) */
         nav_layer {
             display-name = "Navigation";
             bindings = <
-                &trans &trans &none &kp UP_ARROW &none &kp C_BRI_UP &mmv MOVE_UP &kp C_VOLUME_UP &msc SCRL_RIGHT &mmv MOVE_UP &msc SCRL_LEFT &msc SCRL_DOWN &trans
-                &trans &none &kp LEFT_ARROW &kp DOWN_ARROW &kp RIGHT_ARROW &kp C_BRI_DN &mmv MOVE_LEFT &mkp LCLK &mmv MOVE_RIGHT &kp C_VOLUME_DOWN &mmv MOVE_LEFT &mmv MOVE_DOWN &mmv MOVE_RIGHT &msc SCRL_UP &trans
-                &trans &trans &trans &trans &trans &trans &mmv MOVE_DOWN &none &kp C_MUTE &mkp MB1 &mkp MB3 &mkp MB2 &none &trans
+                &trans &trans &trans &kp UP &trans &kp C_BRI_UP &mmv MOVE_UP &kp C_VOL_UP &msc SCRL_RIGHT &mmv MOVE_UP &msc SCRL_LEFT &msc SCRL_DOWN &trans
+                &trans &trans &kp LEFT &kp DOWN &kp RIGHT &kp C_BRI_DN &mmv MOVE_LEFT &mkp LCLK &mmv MOVE_RIGHT &kp C_VOL_DN &mmv MOVE_LEFT &mmv MOVE_DOWN &mmv MOVE_RIGHT &msc SCRL_UP &trans
+                &trans &trans &trans &trans &trans &trans &mmv MOVE_DOWN &none &kp C_MUTE &mkp MB1 &mkp MB3 &mkp MB2 &trans &trans
                 &trans &trans &trans &trans &trans &trans
             >;
 
             sensor-bindings = <&rsr_vol &rsr_trans>;
         };
 
+        /* Layer 5: Settings (hold third right thumb key) */
         settings_layer {
             display-name = "Settings";
             bindings = <
-                &trans &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &mmv MOVE_UP &trans &msc SCRL_RIGHT &kp UP_ARROW &msc SCRL_LEFT &msc SCRL_DOWN &bt BT_CLR
-                &trans &none &kp C_PREVIOUS &kp C_PLAY_PAUSE &kp C_NEXT &trans &mmv MOVE_LEFT &mkp LCLK &mmv MOVE_RIGHT &trans &kp LEFT_ARROW &kp DOWN_ARROW &kp RIGHT_ARROW &msc SCRL_UP &trans
-                &sys_reset &trans &trans &trans &trans &trans &kp C_MUTE &mmv MOVE_DOWN &trans &trans &trans &trans &trans &sys_reset
+                &trans &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &mmv MOVE_UP &trans &msc SCRL_RIGHT &kp UP &msc SCRL_LEFT &msc SCRL_DOWN &bt BT_CLR
+                &trans &none &kp C_PREV &kp C_PP &kp C_NEXT &trans &mmv MOVE_LEFT &mkp LCLK &mmv MOVE_RIGHT &trans &kp LEFT &kp DOWN &kp RIGHT &msc SCRL_UP &trans
+                &sys_reset &trans &trans &trans &trans &trans &kp C_MUTE &mmv MOVE_DOWN &trans &trans &trans &trans &sys_reset &trans
                 &trans &trans &trans &trans &trans &trans
             >;
 
             sensor-bindings = <&rsr_vol &rsr_trans>;
-        };
-
-        mirror_layer {
-            display-name = "Mirror";
-            bindings = <
-                &trans &kp P &kp O &kp I &kp U &kp Y &trans &kp T &kp R &kp E &kp W &kp Q &trans
-                &trans &kp SEMI &kp L &kp K &kp J &kp H &trans &trans &trans &kp G &kp F &kp D &kp S &kp A &trans
-                &trans &kp FSLH &kp DOT &kp COMMA &kp M &kp N &trans &trans &kp B &kp V &kp C &kp X &kp Z &trans
-                &trans &trans &trans &trans &trans &trans
-            >;
         };
     };
 };
